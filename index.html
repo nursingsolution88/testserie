@@ -1,6 +1,265 @@
-```javascript
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nursing Solution Store</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f3f3f3;
+}
+
+header{
+background:#131921;
+color:white;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+}
+
+.search{
+width:50%;
+min-width:250px;
+padding:10px;
+border:none;
+border-radius:5px;
+}
+
+.nav{
+background:#232f3e;
+padding:12px;
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+font-weight:bold;
+}
+
+.banner{
+background:white;
+padding:50px 20px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.banner h1{
+font-size:40px;
+margin-bottom:10px;
+}
+
+.banner p{
+font-size:18px;
+color:#555;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+text-align:center;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card img{
+width:100%;
+height:220px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.card h3{
+margin-top:10px;
+margin-bottom:10px;
+}
+
+.card p{
+color:#666;
+margin-bottom:10px;
+}
+
+.price{
+font-size:22px;
+font-weight:bold;
+margin:10px 0;
+color:green;
+}
+
+.btn{
+background:#ff9900;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+border-radius:5px;
+font-weight:bold;
+width:100%;
+}
+
+.btn:hover{
+background:#e68a00;
+}
+
+.loading{
+text-align:center;
+padding:40px;
+font-size:22px;
+}
+
+.social{
+text-align:center;
+padding:30px;
+}
+
+.social a{
+display:inline-block;
+margin:10px;
+padding:10px 20px;
+background:#131921;
+color:white;
+text-decoration:none;
+border-radius:5px;
+}
+
+footer{
+background:#131921;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:30px;
+}
+
+.telegram-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#0088cc;
+color:white;
+padding:12px 18px;
+border-radius:50px;
+text-decoration:none;
+font-weight:bold;
+z-index:999;
+}
+
+@media(max-width:768px){
+
+.search{
+width:100%;
+}
+
+.banner h1{
+font-size:28px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">Nursing Solution</div>
+
+<input
+type="text"
+class="search"
+id="searchBox"
+placeholder="Search Notes, PDFs, Test Series..."
+onkeyup="searchProducts()">
+</header>
+
+<div class="nav">
+<a href="#">Home</a>
+<a href="#">Notes</a>
+<a href="#">PDF Store</a>
+<a href="#">Test Series</a>
+<a href="#">Contact</a>
+</div>
+
+<section class="banner">
+<h1>Nursing Solution Store</h1>
+<p>B.Sc Nursing • GNM • ANM • CHO • NORCET</p>
+</section>
+
+<section id="products" class="products">
+<div class="loading">Loading Products...</div>
+</section>
+
+<div class="social">
+
+<a href="https://t.me/nursingsolution88" target="_blank">
+Telegram
+</a>
+
+<a href="https://whatsapp.com/channel/0029Vb60ICxBPzjUZDBd680p" target="_blank">
+WhatsApp
+</a>
+
+<a href="https://instagram.com/nursingsolution88" target="_blank">
+Instagram
+</a>
+
+</div>
+
+<a
+class="telegram-btn"
+href="https://t.me/nursingsolution88"
+target="_blank">
+Join Telegram
+</a>
+
+<footer>
+© 2026 Nursing Solution | All Rights Reserved
+</footer>
+
+<script>
+
 const API =
 "https://script.google.com/macros/s/AKfycbx4--DG-OGx_7T87lF-wOC6LstBtrCv4Rf-f-pWqTToEU7hf0XUS6hSJYH82KU-Am2Elw/exec";
+
+let allProducts = [];
+
+function buyNow(){
+
+window.open(
+"https://rzp.io/rzp/j6fXuiS",
+"_blank"
+);
+
+}
 
 async function loadProducts(){
 
@@ -10,14 +269,36 @@ const response = await fetch(API);
 
 const products = await response.json();
 
+allProducts = products;
+
+displayProducts(products);
+
+}
+catch(error){
+
+document.getElementById("products").innerHTML =
+"<h2>Failed to Load Products</h2>";
+
+console.error(error);
+
+}
+
+}
+
+function displayProducts(products){
+
 let html = "";
 
-products.forEach(product => {
+products.forEach(product=>{
 
 html += `
+
 <div class="card">
 
-<img src="${product.image || 'https://via.placeholder.com/300x220'}">
+<img src="${
+product.image ||
+'https://via.placeholder.com/300x220'
+}">
 
 <h3>${product.name}</h3>
 
@@ -27,28 +308,55 @@ html += `
 ₹${product.price}
 </div>
 
-<button class="btn"
-onclick="window.open('https://rzp.io/rzp/j6fXuiS')">
+<button
+class="btn"
+onclick="buyNow()">
 Buy Now
 </button>
 
 </div>
+
 `;
 
 });
 
-document.getElementById("products").innerHTML = html;
+if(products.length===0){
 
-}catch(error){
-
-document.getElementById("products").innerHTML =
-"<h3>Error Loading Products</h3>";
-
-console.log(error);
+html = `
+<h2 style="text-align:center;">
+No Products Found
+</h2>
+`;
 
 }
+
+document.getElementById("products").innerHTML =
+html;
+
+}
+
+function searchProducts(){
+
+const keyword =
+document.getElementById("searchBox")
+.value
+.toLowerCase();
+
+const filtered =
+allProducts.filter(item =>
+(item.name || "")
+.toLowerCase()
+.includes(keyword)
+);
+
+displayProducts(filtered);
 
 }
 
 loadProducts();
+
+</script>
+
+</body>
+</html>
 ```
