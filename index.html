@@ -1,12 +1,13 @@
 <script>
 
-const API =
-"https://script.google.com/macros/s/AKfycbyt1y9qO6zuBiilKpHTnSdlpJk7y8qvICekXp92JlWXZYTEBkII-USrZ3kq7BrZpZsR/exec";
+const API = "https://script.google.com/macros/s/AKfycbyt1y9qO6zuBiilKpHTnSdlpJk7y8qvICekXp92JlWXZYTEBkII-USrZ3kq7BrZpZsR/exec";
 
-function addTest(){
+async function addTest(){
+
+try{
 
 const data = {
-action:"addTest",
+action: "addTest",
 testId: document.getElementById("testId").value,
 title: document.getElementById("title").value,
 type: document.getElementById("type").value,
@@ -14,31 +15,26 @@ price: document.getElementById("price").value,
 description: document.getElementById("description").value
 };
 
-fetch(API,{
-method:"POST",
+const response = await fetch(API,{
+method: "POST",
 headers:{
 "Content-Type":"application/json"
 },
 body: JSON.stringify(data)
-})
-.then(response => response.text())
-.then(result => {
+});
 
-console.log(result);
+const result = await response.text();
+
 alert(result);
 
-document.getElementById("testId").value="";
-document.getElementById("title").value="";
-document.getElementById("price").value="";
-document.getElementById("description").value="";
+console.log(result);
 
-})
-.catch(error => {
+}catch(error){
 
-console.error(error);
-alert("ERROR: " + error);
+alert("ERROR: " + error.message);
+console.log(error);
 
-});
+}
 
 }
 
