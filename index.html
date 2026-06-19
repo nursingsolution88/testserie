@@ -3,15 +3,38 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Admin Panel</title>
+<title>Test Series Admin Panel</title>
+<style>
+body{
+font-family:Arial;
+max-width:600px;
+margin:auto;
+padding:20px;
+}
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+}
+button{
+padding:10px 20px;
+cursor:pointer;
+}
+#result{
+margin-top:15px;
+font-weight:bold;
+}
+</style>
 </head>
 <body>
 
-<h2>Add Test</h2>
+<h2>Add New Test</h2>
 
-<input id="testId" placeholder="Test ID"><br><br>
-<input id="title" placeholder="Title"><br><br>
-<input id="price" placeholder="Price"><br><br>
+<input type="text" id="testId" placeholder="Test ID">
+
+<input type="text" id="title" placeholder="Test Title">
+
+<input type="number" id="price" placeholder="Price">
 
 <button onclick="addTest()">Add Test</button>
 
@@ -19,41 +42,35 @@
 
 <script>
 
-const API = "PASTE_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE";
+const API = "https://script.google.com/macros/s/AKfycbxVJ3KHit_N5VknZuyJ8XjtDeX8d1hrGPuemyHUFVpCVkls3vIgPCHx9I6FdjHoD-s/exec";
 
 async function addTest(){
 
 const data = {
-action:"addTest",
-testId:document.getElementById("testId").value,
-title:document.getElementById("title").value,
-type:"Free",
-price:document.getElementById("price").value,
-description:"Demo"
+testId: document.getElementById("testId").value,
+title: document.getElementById("title").value,
+price: document.getElementById("price").value
 };
 
 try{
 
 const response = await fetch(API,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
 body:JSON.stringify(data)
 });
 
-const text = await response.text();
+const result = await response.text();
 
-document.getElementById("result").innerHTML = text;
+document.getElementById("result").innerHTML = result;
 
-console.log(text);
+alert("Test Added Successfully");
 
-}catch(err){
+}catch(error){
 
 document.getElementById("result").innerHTML =
-"ERROR : " + err;
+"Error : " + error;
 
-console.log(err);
+console.log(error);
 
 }
 
