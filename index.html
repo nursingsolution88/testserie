@@ -1,41 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body{
+font-family:Arial;
+max-width:700px;
+margin:auto;
+padding:20px;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin:5px 0;
+}
+
+button{
+padding:10px 20px;
+cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<h3>Add New Test</h3>
+
+<input type="number" id="testId" placeholder="Test ID">
+
+<input type="text" id="title" placeholder="Test Title">
+
+<select id="type">
+<option value="Free">Free</option>
+<option value="Paid">Paid</option>
+</select>
+
+<input type="number" id="price" placeholder="Price">
+
+<textarea id="description" placeholder="Description"></textarea>
+
+<button onclick="addTest()">Add Test</button>
+
 <script>
 
 const API = "https://script.google.com/macros/s/AKfycbyt1y9qO6zuBiilKpHTnSdlpJk7y8qvICekXp92JlWXZYTEBkII-USrZ3kq7BrZpZsR/exec";
 
-async function addTest(){
-
-try{
+function addTest(){
 
 const data = {
-action: "addTest",
-testId: document.getElementById("testId").value,
-title: document.getElementById("title").value,
-type: document.getElementById("type").value,
-price: document.getElementById("price").value,
-description: document.getElementById("description").value
+action:"addTest",
+testId:document.getElementById("testId").value,
+title:document.getElementById("title").value,
+type:document.getElementById("type").value,
+price:document.getElementById("price").value,
+description:document.getElementById("description").value
 };
 
-const response = await fetch(API,{
-method: "POST",
+fetch(API,{
+method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-body: JSON.stringify(data)
-});
-
-const result = await response.text();
-
+body:JSON.stringify(data)
+})
+.then(response => response.text())
+.then(result => {
 alert(result);
-
 console.log(result);
-
-}catch(error){
-
-alert("ERROR: " + error.message);
+})
+.catch(error => {
+alert("Error: " + error);
 console.log(error);
-
-}
+});
 
 }
 
 </script>
+
+</body>
+</html>
+```
