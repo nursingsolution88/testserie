@@ -1,51 +1,3 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Admin Panel</title>
-<style>
-body{
-font-family:Arial;
-max-width:700px;
-margin:auto;
-padding:20px;
-}
-input,select,textarea{
-width:100%;
-padding:10px;
-margin:5px 0;
-}
-button{
-padding:10px 20px;
-cursor:pointer;
-}
-</style>
-</head>
-<body>
-
-<h2>Admin Panel</h2>
-
-<h3>Add New Test</h3>
-
-<input type="number" id="testId" placeholder="Test ID">
-
-<input type="text" id="title" placeholder="Test Title">
-
-<select id="type">
-<option>Free</option>
-<option>Paid</option>
-</select>
-
-<input type="number" id="price" placeholder="Price">
-
-<textarea id="description"
-placeholder="Description"></textarea>
-
-<button onclick="addTest()">
-Add Test
-</button>
-
 <script>
 
 const API =
@@ -54,38 +6,40 @@ const API =
 function addTest(){
 
 const data = {
-
 action:"addTest",
-
-testId:
-document.getElementById("testId").value,
-
-title:
-document.getElementById("title").value,
-
-type:
-document.getElementById("type").value,
-
-price:
-document.getElementById("price").value,
-
-description:
-document.getElementById("description").value
-
+testId: document.getElementById("testId").value,
+title: document.getElementById("title").value,
+type: document.getElementById("type").value,
+price: document.getElementById("price").value,
+description: document.getElementById("description").value
 };
 
 fetch(API,{
 method:"POST",
-body:JSON.stringify(data)
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify(data)
 })
-.then(r=>r.json())
-.then(res=>{
-alert("Test Added Successfully");
+.then(response => response.text())
+.then(result => {
+
+console.log(result);
+alert(result);
+
+document.getElementById("testId").value="";
+document.getElementById("title").value="";
+document.getElementById("price").value="";
+document.getElementById("description").value="";
+
+})
+.catch(error => {
+
+console.error(error);
+alert("ERROR: " + error);
+
 });
 
 }
 
 </script>
-
-</body>
-</html>
