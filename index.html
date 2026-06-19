@@ -1,204 +1,54 @@
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nursing Solution Store</title>
+```javascript
+const API =
+"https://script.google.com/macros/s/AKfycbx4--DG-OGx_7T87lF-wOC6LstBtrCv4Rf-f-pWqTToEU7hf0XUS6hSJYH82KU-Am2Elw/exec";
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+async function loadProducts(){
 
-body{
-background:#f3f3f3;
-}
+try{
 
-header{
-background:#131921;
-color:white;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
+const response = await fetch(API);
 
-.logo{
-font-size:28px;
-font-weight:bold;
-}
+const products = await response.json();
 
-.search{
-width:50%;
-padding:10px;
-border:none;
-border-radius:5px;
-}
+let html = "";
 
-.nav{
-background:#232f3e;
-padding:12px;
-display:flex;
-justify-content:center;
-gap:20px;
-flex-wrap:wrap;
-}
+products.forEach(product => {
 
-.nav a{
-color:white;
-text-decoration:none;
-font-weight:bold;
-}
-
-.banner{
-background:white;
-padding:50px 20px;
-text-align:center;
-margin-bottom:20px;
-}
-
-.banner h1{
-font-size:40px;
-margin-bottom:10px;
-}
-
-.banner p{
-font-size:18px;
-color:#555;
-}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:20px;
-}
-
-.card{
-background:white;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,.1);
-text-align:center;
-}
-
-.card img{
-width:100%;
-height:220px;
-object-fit:cover;
-border-radius:8px;
-}
-
-.card h3{
-margin-top:10px;
-}
-
-.price{
-font-size:22px;
-font-weight:bold;
-margin:10px 0;
-}
-
-.btn{
-background:#ff9900;
-border:none;
-padding:10px 20px;
-cursor:pointer;
-border-radius:5px;
-font-weight:bold;
-}
-
-.social{
-text-align:center;
-padding:30px;
-}
-
-.social a{
-display:inline-block;
-margin:10px;
-padding:10px 20px;
-background:#131921;
-color:white;
-text-decoration:none;
-border-radius:5px;
-}
-
-footer{
-background:#131921;
-color:white;
-text-align:center;
-padding:20px;
-margin-top:30px;
-}
-</style>
-
-</head>
-<body>
-
-<header>
-<div class="logo">Nursing Solution</div>
-<input type="text" class="search" placeholder="Search Notes, PDFs, Tests...">
-</header>
-
-<div class="nav">
-<a href="#">Home</a>
-<a href="#">Notes</a>
-<a href="#">PDF Store</a>
-<a href="#">Test Series</a>
-<a href="#">Contact</a>
-</div>
-
-<section class="banner">
-<h1>Nursing Solution Store</h1>
-<p>B.Sc Nursing • GNM • ANM • CHO • NORCET</p>
-</section>
-
-<section class="products">
-
+html += `
 <div class="card">
-<img src="https://via.placeholder.com/300x220">
-<h3>Management Notes PDF</h3>
-<div class="price">₹20</div>
-<button class="btn" onclick="buyNow()">Buy Now</button>
+
+<img src="${product.image || 'https://via.placeholder.com/300x220'}">
+
+<h3>${product.name}</h3>
+
+<p>${product.type}</p>
+
+<div class="price">
+₹${product.price}
 </div>
 
-<div class="card">
-<img src="https://via.placeholder.com/300x220">
-<h3>MSN Notes PDF</h3>
-<div class="price">₹49</div>
-<button class="btn" onclick="buyNow()">Buy Now</button>
+<button class="btn"
+onclick="window.open('https://rzp.io/rzp/j6fXuiS')">
+Buy Now
+</button>
+
 </div>
+`;
 
-<div class="card">
-<img src="https://via.placeholder.com/300x220">
-<h3>CHO Test Series</h3>
-<div class="price">₹99</div>
-<button class="btn" onclick="buyNow()">Buy Now</button>
-</div>
+});
 
-</section>
+document.getElementById("products").innerHTML = html;
 
-<div class="social">
-<a href="https://t.me/nursingsolution88">Telegram</a>
-<a href="https://whatsapp.com/channel/0029Vb60ICxBPzjUZDBd680p">WhatsApp</a>
-<a href="https://instagram.com/nursingsolution88">Instagram</a>
-</div>
+}catch(error){
 
-<footer>
-© 2026 Nursing Solution | All Rights Reserved
-</footer>
+document.getElementById("products").innerHTML =
+"<h3>Error Loading Products</h3>";
 
-<script>
-function buyNow(){
-window.open("https://rzp.io/rzp/j6fXuiS","_blank");
+console.log(error);
+
 }
-</script>
 
-</body>
-</html>
+}
+
+loadProducts();
 ```
