@@ -1,6 +1,25 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+</head>
+<body>
+
+<h2>Add Test</h2>
+
+<input id="testId" placeholder="Test ID"><br><br>
+<input id="title" placeholder="Title"><br><br>
+<input id="price" placeholder="Price"><br><br>
+
+<button onclick="addTest()">Add Test</button>
+
+<div id="result"></div>
+
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbyt1y9qO6zuBiilKpHTnSdlpJk7y8qvICekXp92JlWXZYTEBkII-USrZ3kq7BrZpZsR/exec";
+const API = "PASTE_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE";
 
 async function addTest(){
 
@@ -8,9 +27,9 @@ const data = {
 action:"addTest",
 testId:document.getElementById("testId").value,
 title:document.getElementById("title").value,
-type:document.getElementById("type").value,
+type:"Free",
 price:document.getElementById("price").value,
-description:document.getElementById("description").value
+description:"Demo"
 };
 
 try{
@@ -23,21 +42,25 @@ headers:{
 body:JSON.stringify(data)
 });
 
-const result = await response.json();
+const text = await response.text();
 
-alert(result.message);
+document.getElementById("result").innerHTML = text;
 
-console.log(result);
+console.log(text);
 
-}
-catch(error){
+}catch(err){
 
-alert("ERROR: " + error);
+document.getElementById("result").innerHTML =
+"ERROR : " + err;
 
-console.log(error);
+console.log(err);
 
 }
 
 }
 
 </script>
+
+</body>
+</html>
+```
