@@ -100,9 +100,8 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
 <footer>© 2026 Nursing Solution | All Rights Reserved</footer>
 
 <script>
-// ⚠️ यहाँ अपना नया Google Apps Script Web App URL डालें
-const API = "https://script.google.com/macros/s/AKfycbxCcAw5Rr8JuahjuepvK17yW0gxyhx5lV1RsQcobdQiaCr5MPAl8vNiAsAlqUH4FeVT4Q/exec
-  ";
+// Aapka naya URL yahan add kar diya hai
+const API = "https://script.google.com/macros/s/AKfycbxCcAw5Rr8JuahjuepvK17yW0gxyhx5lV1RsQcobdQiaCr5MPAl8vNiAsAlqUH4FeVT4Q/exec";
 
 let allProducts = [];
 let selectedProduct = null;
@@ -139,20 +138,17 @@ function displayProducts(products){
   document.getElementById("products").innerHTML = html;
 }
 
-// Checkout Modal ओपन करने के लिए
 function openCheckout(id, name, price) {
   selectedProduct = { id, name, price };
   document.getElementById("modalProdName").innerText = `${name} - ₹${price}`;
   document.getElementById("checkoutModal").style.display = "flex";
 }
 
-// Modal बंद करने के लिए
 function closeModal() {
   document.getElementById("checkoutModal").style.display = "none";
   document.getElementById("orderForm").reset();
 }
 
-// फॉर्म सबमिट होने पर डेटा शीट में भेजने और पेमेंट लिंक खोलने के लिए
 async function handleOrderSubmit(event) {
   event.preventDefault();
   
@@ -173,29 +169,24 @@ async function handleOrderSubmit(event) {
   };
 
   try {
-    // Google Sheet (POST Request) में डेटा भेजें
-    const response = await fetch(API, {
+    fetch(API, {
       method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderPayload)
     });
     
-    const result = await response.json();
-    
-    if(result.status === "success") {
-      // डेटा सेव होने के बाद सीधा Razorpay लिंक पर रीडायरेक्ट करें
+    setTimeout(() => {
       window.open("https://rzp.io/rzp/j6fXuiS", "_blank");
       closeModal();
-    } else {
-      alert("Order processing failed, please try again.");
-    }
+      payBtn.innerText = "Proceed to Payment";
+      payBtn.disabled = false;
+    }, 1200);
+
   } catch (error) {
-    console.error("Error saving order:", error);
-    // नेटवर्क एरर होने पर भी छात्र का पेमेंट न रुके, इसलिए लिंक खोल दें
+    console.error("Error:", error);
     window.open("https://rzp.io/rzp/j6fXuiS", "_blank");
     closeModal();
-  } finally {
-    payBtn.innerText = "Proceed to Payment";
-    payBtn.disabled = false;
   }
 }
 
