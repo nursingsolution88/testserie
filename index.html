@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nursing Solution Store</title>
+<title>Nursing Solution Store & Test Series</title>
 
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
@@ -23,49 +23,48 @@ header{ background:#131921; color:white; padding:15px; display:flex; justify-con
 .card h3{ margin-top:10px; margin-bottom:10px; }
 .card p{ color:#666; margin-bottom:10px; }
 .price{ font-size:22px; font-weight:bold; margin:10px 0; color:green; }
-.btn{ background:#ff9900; border:none; padding:10px 20px; cursor:pointer; border-radius:5px; font-weight:bold; width:100%; }
-.btn:hover{ background:#e68a00; }
+.btn{ background:#ff9900; border:none; padding:10px 20px; cursor:pointer; border-radius:5px; font-weight:bold; width:100%; margin-bottom:5px; }
+.btn.test-btn { background:#00a8ff; color:white; }
+.btn:hover{ opacity:0.9; }
 .loading{ text-align:center; padding:40px; font-size:22px; }
-.social{ text-align:center; padding:30px; }
-.social a{ display:inline-block; margin:10px; padding:10px 20px; background:#131921; color:white; text-decoration:none; border-radius:5px; }
-footer{ background:#131921; color:white; text-align:center; padding:20px; margin-top:30px; }
-.telegram-btn{ position:fixed; bottom:20px; right:20px; background:#0088cc; color:white; padding:12px 18px; border-radius:50px; text-decoration:none; font-weight:bold; z-index:999; }
 
-/* Checkout Modal Styling */
+/* Modals */
 .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
-.modal-content { background:white; padding:25px; border-radius:10px; width:90%; max-width:400px; text-align:left; box-shadow:0 5px 15px rgba(0,0,0,0.3); }
+.modal-content { background:white; padding:25px; border-radius:10px; width:90%; max-width:500px; text-align:left; box-shadow:0 5px 15px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto; }
 .modal-content h2 { margin-bottom:15px; font-size:22px; color:#131921; }
 .modal-content label { display:block; margin:10px 0 5px; font-weight:bold; }
 .modal-content input { width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-bottom:10px; }
-.modal-btn { background:#ff9900; border:none; padding:12px; cursor:pointer; border-radius:5px; font-weight:bold; width:100%; margin-top:10px; color:black; font-size:16px; }
 .close-modal { float:right; font-size:24px; cursor:pointer; font-weight:bold; color:#666; }
 
-@media(max-width:768px){ .search{ width:100%; } .banner h1{ font-size:28px; } }
+/* Quiz Styling */
+.quiz-q { font-size:18px; font-weight:bold; margin-bottom:15px; color:#232f3e; }
+.option-label { display:block; background:#f9f9f9; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:5px; cursor:pointer; transition:0.2s; }
+.option-label:hover { background:#e2f0cb; }
+.option-label input { width:auto; margin-right:10px; }
+
+footer{ background:#131921; color:white; text-align:center; padding:20px; margin-top:30px; }
 </style>
 </head>
-
 <body>
 
 <header>
 <div class="logo">Nursing Solution</div>
-<input type="text" class="search" id="searchBox" placeholder="Search Notes, PDFs, Test Series..." onkeyup="searchProducts()">
+<input type="text" class="search" id="searchBox" placeholder="Search Notes or Tests..." onkeyup="searchProducts()">
 </header>
 
 <div class="nav">
 <a href="#">Home</a>
-<a href="#">Notes</a>
-<a href="#">PDF Store</a>
-<a href="#">Test Series</a>
-<a href="#">Contact</a>
+<a href="#">Notes Store</a>
+<a href="#">Online Test Series</a>
 </div>
 
 <section class="banner">
 <h1>Nursing Solution Store</h1>
-<p>B.Sc Nursing • GNM • ANM • CHO • NORCET</p>
+<p>Live Mock Tests & Premium Nursing PDF Notes</p>
 </section>
 
 <section id="products" class="products">
-<div class="loading">Loading Products...</div>
+<div class="loading">Loading Store Items...</div>
 </section>
 
 <div id="checkoutModal" class="modal">
@@ -73,38 +72,34 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
     <span class="close-modal" onclick="closeModal()">&times;</span>
     <h2>Student Details</h2>
     <p id="modalProdName" style="font-weight:bold; color:#555; margin-bottom:10px;"></p>
-    
     <form id="orderForm" onsubmit="handleOrderSubmit(event)">
-      <label>Full Name</label>
-      <input type="text" id="studentName" required placeholder="Enter your full name">
-      
-      <label>Email Address</label>
-      <input type="email" id="studentEmail" required placeholder="Enter your email">
-      
-      <label>Mobile Number</label>
-      <input type="tel" id="studentMobile" pattern="[0-9]{10}" required placeholder="10 digit mobile number">
-      
-      <button type="submit" class="modal-btn" id="payBtnText">Proceed to Payment</button>
+      <label>Full Name</label><input type="text" id="studentName" required>
+      <label>Email Address</label><input type="email" id="studentEmail" required>
+      <label>Mobile Number</label><input type="tel" id="studentMobile" pattern="[0-9]{10}" required>
+      <button type="submit" class="btn" style="background:#ff9900;" id="payBtnText">Proceed to Payment</button>
     </form>
   </div>
 </div>
 
-<div class="social">
-<a href="https://t.me/nursingsolution88" target="_blank">Telegram</a>
-<a href="https://whatsapp.com/channel/0029Vb60ICxBPzjUZDBd680p" target="_blank">WhatsApp</a>
-<a href="https://instagram.com/nursingsolution88" target="_blank">Instagram</a>
+<div id="quizModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeQuizModal()">&times;</span>
+    <h2 id="quizTitle">Online Mock Test</h2>
+    <hr style="margin-bottom:15px;">
+    <div id="quizContainer">
+      </div>
+  </div>
 </div>
-
-<a class="telegram-btn" href="https://t.me/nursingsolution88" target="_blank">Join Telegram</a>
 
 <footer>© 2026 Nursing Solution | All Rights Reserved</footer>
 
 <script>
-// Aapka naya URL yahan add kar diya hai
-const API = "https://script.google.com/macros/s/AKfycbxCcAw5Rr8JuahjuepvK17yW0gxyhx5lV1RsQcobdQiaCr5MPAl8vNiAsAlqUH4FeVT4Q/exec";
+// Aapka naya Web App URL yahan update ho gaya hai
+const API = "https://script.google.com/macros/s/AKfycbxW2qh4XL-WRlJ7lPZ1zzB6e2S1CPN1OJ59oYrqnu-ih5SY45VjL0cnJtH7e8PSiIM_Hg/exec";
 
 let allProducts = [];
 let selectedProduct = null;
+let currentQuestions = [];
 
 async function loadProducts(){
   try{
@@ -113,29 +108,86 @@ async function loadProducts(){
     allProducts = products;
     displayProducts(products);
   } catch(error){
-    document.getElementById("products").innerHTML = "<h2>Failed to Load Products</h2>";
-    console.error(error);
+    document.getElementById("products").innerHTML = "<h2>Failed to Load Store Data</h2>";
   }
 }
 
 function displayProducts(products){
   let html = "";
   products.forEach(product=>{
+    let buttonHtml = "";
+    if(product.type && product.type.toLowerCase() === 'test') {
+      buttonHtml = `<button class="btn test-btn" onclick="loadQuizData('${product.id}', '${product.name}')">📝 Start Mock Test</button>`;
+    } else {
+      buttonHtml = `<button class="btn" onclick="openCheckout('${product.id}', '${product.name}', '${product.price}')">🛍️ Buy Now</button>`;
+    }
+
     html += `
       <div class="card">
         <img src="${product.image || 'https://via.placeholder.com/300x220'}">
         <h3>${product.name}</h3>
-        <p>${product.type}</p>
+        <p style="background:#ddd; display:inline-block; padding:2px 8px; border-radius:3px; font-size:12px;">${product.type || 'PDF'}</p>
         <div class="price">₹${product.price}</div>
-        <button class="btn" onclick="openCheckout('${product.id}', '${product.name}', '${product.price}')">Buy Now</button>
+        ${buttonHtml}
       </div>
     `;
   });
-
-  if(products.length===0){
-    html = `<h2 style="text-align:center; grid-column: 1/-1;">No Products Found</h2>`;
-  }
+  if(products.length===0) html = `<h2 style="text-align:center; grid-column:1/-1;">No Data Found</h2>`;
   document.getElementById("products").innerHTML = html;
+}
+
+async function loadQuizData(testId, testName) {
+  document.getElementById("quizTitle").innerText = testName;
+  document.getElementById("quizContainer").innerHTML = "<h3>Loading Questions from Sheet... Please wait...</h3>";
+  document.getElementById("quizModal").style.display = "flex";
+  
+  try {
+    const response = await fetch(`${API}?action=getQuestions&testId=${testId}`);
+    currentQuestions = await response.json();
+    
+    if(currentQuestions.length === 0) {
+      document.getElementById("quizContainer").innerHTML = "<h3 style='color:red;'>इस टेस्ट में अभी कोई सवाल नहीं जोड़े गए हैं! कृपया 'Questions' शीट चेक करें।</h3>";
+      return;
+    }
+    renderQuestions();
+  } catch (error) {
+    document.getElementById("quizContainer").innerHTML = "<h3 style='color:red;'>Error loading questions.</h3>";
+  }
+}
+
+function renderQuestions() {
+  let html = "";
+  currentQuestions.forEach((q, index) => {
+    html += `
+      <div style="margin-bottom:25px; border-bottom:1px dashed #ccc; padding-bottom:15px;">
+        <p class="quiz-q">Q${index+1}. ${q.question}</p>
+        <label class="option-label"><input type="radio" name="q_${index}" value="A"> ${q.a}</label>
+        <label class="option-label"><input type="radio" name="q_${index}" value="B"> ${q.b}</label>
+        <label class="option-label"><input type="radio" name="q_${index}" value="C"> ${q.c}</label>
+        <label class="option-label"><input type="radio" name="q_${index}" value="D"> ${q.d}</label>
+      </div>
+    `;
+  });
+  html += `<button class="btn" style="background:green; color:white;" onclick="calculateScore()">Submit Test</button>`;
+  document.getElementById("quizContainer").innerHTML = html;
+}
+
+function calculateScore() {
+  let score = 0;
+  currentQuestions.forEach((q, index) => {
+    const selected = document.querySelector(`input[name="q_${index}"]:checked`);
+    if(selected && selected.value === q.correct) {
+      score++;
+    }
+  });
+  
+  document.getElementById("quizContainer").innerHTML = `
+    <div style="text-align:center; padding:20px;">
+      <h1 style="color:green; font-size:40px;">🎯 Test Submitted!</h1>
+      <p style="font-size:22px; margin:15px 0;">Your Score: <strong>${score} / ${currentQuestions.length}</strong></p>
+      <button class="btn" onclick="closeQuizModal()">Close Window</button>
+    </div>
+  `;
 }
 
 function openCheckout(id, name, price) {
@@ -143,51 +195,21 @@ function openCheckout(id, name, price) {
   document.getElementById("modalProdName").innerText = `${name} - ₹${price}`;
   document.getElementById("checkoutModal").style.display = "flex";
 }
-
-function closeModal() {
-  document.getElementById("checkoutModal").style.display = "none";
-  document.getElementById("orderForm").reset();
-}
+function closeModal() { document.getElementById("checkoutModal").style.display = "none"; document.getElementById("orderForm").reset(); }
+function closeQuizModal() { document.getElementById("quizModal").style.display = "none"; }
 
 async function handleOrderSubmit(event) {
   event.preventDefault();
-  
   const name = document.getElementById("studentName").value;
   const email = document.getElementById("studentEmail").value;
   const mobile = document.getElementById("studentMobile").value;
-  
   const payBtn = document.getElementById("payBtnText");
-  payBtn.innerText = "Processing... Please Wait";
-  payBtn.disabled = true;
-
-  const orderPayload = {
-    name: name,
-    email: email,
-    mobile: mobile,
-    productId: selectedProduct.id,
-    amount: selectedProduct.price
-  };
+  payBtn.innerText = "Processing..."; payBtn.disabled = true;
 
   try {
-    fetch(API, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderPayload)
-    });
-    
-    setTimeout(() => {
-      window.open("https://rzp.io/rzp/j6fXuiS", "_blank");
-      closeModal();
-      payBtn.innerText = "Proceed to Payment";
-      payBtn.disabled = false;
-    }, 1200);
-
-  } catch (error) {
-    console.error("Error:", error);
-    window.open("https://rzp.io/rzp/j6fXuiS", "_blank");
-    closeModal();
-  }
+    fetch(API, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, mobile, productId: selectedProduct.id, amount: selectedProduct.price }) });
+    setTimeout(() => { window.open("https://rzp.io/rzp/j6fXuiS", "_blank"); closeModal(); payBtn.innerText = "Proceed to Payment"; payBtn.disabled = false; }, 1200);
+  } catch (error) { window.open("https://rzp.io/rzp/j6fXuiS", "_blank"); closeModal(); }
 }
 
 function searchProducts(){
@@ -195,9 +217,7 @@ function searchProducts(){
   const filtered = allProducts.filter(item => (item.name || "").toLowerCase().includes(keyword));
   displayProducts(filtered);
 }
-
 loadProducts();
 </script>
-
 </body>
 </html>
