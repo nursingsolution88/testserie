@@ -67,6 +67,7 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
 <div class="loading">Loading Store Items...</div>
 </section>
 
+<!-- Checkout Modal -->
 <div id="checkoutModal" class="modal">
   <div class="modal-content">
     <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -81,13 +82,15 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
   </div>
 </div>
 
+<!-- LIVE QUIZ MODAL -->
 <div id="quizModal" class="modal">
   <div class="modal-content">
     <span class="close-modal" onclick="closeQuizModal()">&times;</span>
     <h2 id="quizTitle">Online Mock Test</h2>
     <hr style="margin-bottom:15px;">
     <div id="quizContainer">
-      </div>
+      <!-- Questions will load here dynamically -->
+    </div>
   </div>
 </div>
 
@@ -95,7 +98,7 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
 
 <script>
 // Aapka naya Web App URL yahan update ho gaya hai
-const API = "https://script.google.com/macros/s/AKfycbxW2qh4XL-WRlJ7lPZ1zzB6e2S1CPN1OJ59oYrqnu-ih5SY45VjL0cnJtH7e8PSiIM_Hg/exec";
+const API = "https://script.google.com/macros/s/AKfycbwJmI5E5ZwlG6p8siVo8Y6f6vMikQFHnJd7TKz2m8vjxCIAV8nr7bxf51WTbAja55DXkQ/exec";
 
 let allProducts = [];
 let selectedProduct = null;
@@ -119,7 +122,7 @@ function displayProducts(products){
     if(product.type && product.type.toLowerCase() === 'test') {
       buttonHtml = `<button class="btn test-btn" onclick="loadQuizData('${product.id}', '${product.name}')">📝 Start Mock Test</button>`;
     } else {
-      buttonHtml = `<button class="btn" onclick="openCheckout('${product.id}', '${product.name}', '${product.price}')">🛍️ Buy Now</button>`;
+      buttonHtml = `<button class="btn" onclick="openCheckout('${product.id}', '${product.name}', '${product.price}', '${product.payLink}')">🛍️ Buy Now</button>`;
     }
 
     html += `
@@ -190,8 +193,8 @@ function calculateScore() {
   `;
 }
 
-function openCheckout(id, name, price) {
-  selectedProduct = { id, name, price };
+function openCheckout(id, name, price, payLink) {
+  selectedProduct = { id, name, price, payLink };
   document.getElementById("modalProdName").innerText = `${name} - ₹${price}`;
   document.getElementById("checkoutModal").style.display = "flex";
 }
@@ -208,8 +211,20 @@ async function handleOrderSubmit(event) {
 
   try {
     fetch(API, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, mobile, productId: selectedProduct.id, amount: selectedProduct.price }) });
-    setTimeout(() => { window.open("https://rzp.io/rzp/j6fXuiS", "_blank"); closeModal(); payBtn.innerText = "Proceed to Payment"; payBtn.disabled = false; }, 1200);
-  } catch (error) { window.open("https://rzp.io/rzp/j6fXuiS", "_blank"); closeModal(); }
+    
+    setTimeout(() => {
+      // Agar sheet me direct PaymentLink column me link h to wahan bheje, nahi to default link pr bheje
+      const finalPayLink = selectedProduct.payLink && selectedProduct.payLink.trim() !== "" ? selectedProduct.payLink : "https://rzp.io/rzp/j6fXuiS";
+      window.open(finalPayLink, "_blank");
+      closeModal();
+      payBtn.innerText = "Proceed to Payment";
+      payBtn.disabled = false;
+    }, 1200);
+  } catch (error) { 
+    const finalPayLink = selectedProduct.payLink && selectedProduct.payLink.trim() !== "" ? selectedProduct.payLink : "https://rzp.io/rzp/j6fXuiS";
+    window.open(finalPayLink, "_blank"); 
+    closeModal(); 
+  }
 }
 
 function searchProducts(){
