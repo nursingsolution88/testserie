@@ -30,7 +30,7 @@ header{ background:#131921; color:white; padding:15px; display:flex; justify-con
 
 /* Modals */
 .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
-.modal-content { background:white; padding:25px; border-radius:10px; width:90%; max-width:500px; text-align:left; box-shadow:0 5px 15px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto; }
+.modal-content { background:white; padding:25px; border-radius:10px; width:90%; max-width:600px; text-align:left; box-shadow:0 5px 15px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto; }
 .modal-content h2 { margin-bottom:15px; font-size:22px; color:#131921; }
 .modal-content label { display:block; margin:10px 0 5px; font-weight:bold; }
 .modal-content input { width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-bottom:10px; }
@@ -41,6 +41,11 @@ header{ background:#131921; color:white; padding:15px; display:flex; justify-con
 .option-label { display:block; background:#f9f9f9; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:5px; cursor:pointer; transition:0.2s; }
 .option-label:hover { background:#e2f0cb; }
 .option-label input { width:auto; margin-right:10px; }
+
+/* Result Rationale Styling */
+.result-box { background:#f9f9f9; padding:12px; border-radius:5px; margin-top:8px; border-left:4px solid #00a8ff; font-size:14px; }
+.txt-correct { color: green; font-weight: bold; }
+.txt-wrong { color: red; font-weight: bold; }
 
 footer{ background:#131921; color:white; text-align:center; padding:20px; margin-top:30px; }
 </style>
@@ -67,7 +72,6 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
 <div class="loading">Loading Store Items...</div>
 </section>
 
-<!-- Checkout Modal -->
 <div id="checkoutModal" class="modal">
   <div class="modal-content">
     <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -82,23 +86,21 @@ footer{ background:#131921; color:white; text-align:center; padding:20px; margin
   </div>
 </div>
 
-<!-- LIVE QUIZ MODAL -->
 <div id="quizModal" class="modal">
   <div class="modal-content">
     <span class="close-modal" onclick="closeQuizModal()">&times;</span>
     <h2 id="quizTitle">Online Mock Test</h2>
     <hr style="margin-bottom:15px;">
     <div id="quizContainer">
-      <!-- Questions will load here dynamically -->
-    </div>
+      </div>
   </div>
 </div>
 
 <footer>© 2026 Nursing Solution | All Rights Reserved</footer>
 
 <script>
-// Aapka naya Web App URL yahan update ho gaya hai
-const API = "https://script.google.com/macros/s/AKfycbwJmI5E5ZwlG6p8siVo8Y6f6vMikQFHnJd7TKz2m8vjxCIAV8nr7bxf51WTbAja55DXkQ/exec";
+// आपका नया Web App URL यहाँ अपडेट कर दिया गया है 🎯
+const API = "https://script.google.com/macros/s/AKfycbyg9hOz2795bxzkKkjo95g7ID_wse1Pxanc1OzJvOd7auiMDcC27pyW3AUZncJWTg0n/exec";
 
 let allProducts = [];
 let selectedProduct = null;
@@ -149,7 +151,7 @@ async function loadQuizData(testId, testName) {
     currentQuestions = await response.json();
     
     if(currentQuestions.length === 0) {
-      document.getElementById("quizContainer").innerHTML = "<h3 style='color:red;'>इस टेस्ट में अभी कोई सवाल नहीं जोड़े गए हैं! कृपया 'Questions' शीट चेक करें।</h3>";
+      document.getElementById("quizContainer").innerHTML = "<h3 style='color:red;'>इस टेस्ट में अभी कोई सवाल नहीं जोड़े गए हैं! कृपया 'Questions' शीट चेक करें।</h3>";
       return;
     }
     renderQuestions();
@@ -177,19 +179,39 @@ function renderQuestions() {
 
 function calculateScore() {
   let score = 0;
+  let reviewHtml = "";
+
   currentQuestions.forEach((q, index) => {
     const selected = document.querySelector(`input[name="q_${index}"]:checked`);
-    if(selected && selected.value === q.correct) {
+    const userAns = selected ? selected.value : "Not Answered";
+    const isCorrect = userAns === q.correct;
+    
+    if(isCorrect) {
       score++;
     }
+
+    reviewHtml += `
+      <div style="margin-bottom:20px; padding:10px; border-bottom:1px solid #eee;">
+        <p style="font-weight:bold;">Q${index+1}. ${q.question}</p>
+        <p>Your Answer: <span class="${isCorrect ? 'txt-correct' : 'txt-wrong'}">${userAns}</span></p>
+        <p>Correct Answer: <span class="txt-correct">${q.correct}</span></p>
+        <div class="result-box">
+          <strong>💡 Rationale:</strong> ${q.rationale ? q.rationale : 'No rationale available.'}
+        </div>
+      </div>
+    `;
   });
   
   document.getElementById("quizContainer").innerHTML = `
-    <div style="text-align:center; padding:20px;">
-      <h1 style="color:green; font-size:40px;">🎯 Test Submitted!</h1>
-      <p style="font-size:22px; margin:15px 0;">Your Score: <strong>${score} / ${currentQuestions.length}</strong></p>
-      <button class="btn" onclick="closeQuizModal()">Close Window</button>
+    <div style="text-align:center; padding:15px; background:#e2f0cb; border-radius:8px; margin-bottom:20px;">
+      <h1 style="color:green; font-size:32px;">🎯 Test Submitted!</h1>
+      <p style="font-size:20px; margin:10px 0;">Your Score: <strong>${score} / ${currentQuestions.length}</strong></p>
     </div>
+    <h3 style="margin-bottom:15px; color:#131921;">📝 Answer Key & Rationale:</h3>
+    <div style="text-align:left;">
+      ${reviewHtml}
+    </div>
+    <button class="btn" style="margin-top:15px;" onclick="closeQuizModal()">Close Window</button>
   `;
 }
 
@@ -213,7 +235,6 @@ async function handleOrderSubmit(event) {
     fetch(API, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, mobile, productId: selectedProduct.id, amount: selectedProduct.price }) });
     
     setTimeout(() => {
-      // Agar sheet me direct PaymentLink column me link h to wahan bheje, nahi to default link pr bheje
       const finalPayLink = selectedProduct.payLink && selectedProduct.payLink.trim() !== "" ? selectedProduct.payLink : "https://rzp.io/rzp/j6fXuiS";
       window.open(finalPayLink, "_blank");
       closeModal();
