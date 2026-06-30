@@ -54,44 +54,38 @@ async function apiRequest(action, payload = {}) {
   const timeout = setTimeout(() => controller.abort(), 25000);
 
   try {
-    const res = await fetch(CONFIG.googleAppsScriptUrl, {
-      method: "POST",
+    const formData = new URLSearchParams();
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
+    formData.append(
+      "payload",
+      JSON.stringify({
         action,
         ...payload,
       }),
+    );
 
-      signal: controller.signal,
+    const res = await fetch(CONFIG.googleAppsScriptUrl, {
+      method: "POST",
+      body: formData,
     });
 
     const text = await res.text();
     console.log("RAW RESPONSE:", text);
 
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error("Apps Script response invalid (check deployment)");
-    }
+    const data = JSON.parse(text);
 
     if (!data.ok) throw new Error(data.error || "Request failed");
 
     return data;
   } catch (err) {
     if (err.name === "AbortError") {
-      throw new Error("Timeout - Apps Script not responding");
+      throw new Error("Server timeout");
     }
     throw err;
   } finally {
     clearTimeout(timeout);
   }
 }
-
 /* -------------------- AUTH -------------------- */
 
 async function login(form) {
