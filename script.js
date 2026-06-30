@@ -1,6 +1,6 @@
 const CONFIG = {
   googleAppsScriptUrl:
-    "https://script.google.com/macros/s/AKfycbzbN52Qv-jhZM97YfKQ11zQ9fYydkExn6ocOk9DHMTq2pYuUQGeQ3NjCj-NPqAzbUzBeQ/exec",
+    "https://script.google.com/macros/s/AKfycbxTun8lRZp9IsLmq80hFcrtNvQOVmTuYavZmNuqnscoVKItTQnA52HCD19cYNme0MOpmA/exec",
   showExplanations: true,
   requestTimeoutMs: 25000,
 };
