@@ -51,31 +51,32 @@ function escapeHtml(v) {
 /* -------------------- API REQUEST (FIXED) -------------------- */
 async function apiRequest(action, payload = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), CONFIG.requestTimeoutMs);
+  const timeout = setTimeout(() => controller.abort(), 25000);
 
   try {
-    const response = await fetch(CONFIG.googleAppsScriptUrl, {
+    const res = await fetch(CONFIG.googleAppsScriptUrl, {
       method: "POST",
 
-      // IMPORTANT FIX (NO HEADERS = NO CORS ISSUE)
-      body: new URLSearchParams({
-        data: JSON.stringify({
-          action,
-          ...payload,
-        }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        action,
+        ...payload,
       }),
 
       signal: controller.signal,
     });
 
-    const text = await response.text();
+    const text = await res.text();
+    console.log("RAW RESPONSE:", text);
 
     let data;
     try {
       data = JSON.parse(text);
-    } catch (e) {
-      console.log("RAW RESPONSE:", text);
-      throw new Error("Server response invalid (Apps Script check karo)");
+    } catch {
+      throw new Error("Apps Script response invalid (check deployment)");
     }
 
     if (!data.ok) throw new Error(data.error || "Request failed");
@@ -83,7 +84,7 @@ async function apiRequest(action, payload = {}) {
     return data;
   } catch (err) {
     if (err.name === "AbortError") {
-      throw new Error("Request timeout - Apps Script not responding");
+      throw new Error("Timeout - Apps Script not responding");
     }
     throw err;
   } finally {
